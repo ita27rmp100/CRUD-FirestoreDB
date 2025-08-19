@@ -1,4 +1,4 @@
-// Import the functions you need from the SDKs you need
+import dotenv from "dotenv"
 import {initializeApp } from "firebase/app";
 import {getFirestore,doc,setDoc,collection,getDocs,query,deleteDoc} from "firebase/firestore"
 
@@ -9,13 +9,13 @@ let firestoreDB , app ;
 
 // Your web app's Firebase configuration
 const firebaseConfig = {
-  apiKey: "AIzaSyCqSUwj14EUDJWN1YLrf_NLMnD_4Sdn75c",
-  authDomain: "learn-f3db6.firebaseapp.com",
-  databaseURL: "https://learn-f3db6-default-rtdb.firebaseio.com",
-  projectId: "learn-f3db6",
-  storageBucket: "learn-f3db6.firebasestorage.app",
-  messagingSenderId: "756639848153",
-  appId: "1:756639848153:web:2131bf4e1e489f048290c8"
+  apiKey:`${process.env.apiKey}`,
+  authDomain:`${process.env.fbName}.firebaseapp.com`,
+  databaseURL:`https://${process.env.fbURL}.firebaseio.com`,
+  projectId:`${process.env.fbName}`,
+  storageBucket:`${process.env.fbName}.firebasestorage.app`,
+  messagingSenderId:`${process.env.messagingSenderId}`,
+  appId:`${process.env.appId}`
 };
 
 // Initialize Firebase
