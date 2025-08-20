@@ -3,9 +3,9 @@ import { existsSync } from 'fs';
 import { configuration, uploadProcessData,GetData,deleteDocument,delField } from './app.js'; // Adjust path if needed
 
 const main = async () => {
-    // Step 1: Initialize the Firebase app
+    // Initialize the Firebase app
     await configuration();
-    // Step 2: Create & update
+    // Create & update
     const student = {
         name:"Morad",
         family:"Bouznad",
@@ -15,7 +15,7 @@ const main = async () => {
         country:"algeria"
     }
     await uploadProcessData(student,"users","ttl19LMsCmQcWLlMhqhcf5");
-    // step 5 : Delete 
+    // Delete 
         // Doc
     console.log("DELETING DATA")
     await deleteDocument("users", "a");
@@ -37,4 +37,7 @@ const main = async () => {
 };
 
 // Run the main function
-main();
+main().then(() => process.exit(0)).catch(err => {
+    console.error(err);
+    process.exit(1);
+});
