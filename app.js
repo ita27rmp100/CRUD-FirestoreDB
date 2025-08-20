@@ -1,12 +1,9 @@
 import {initializeApp } from "firebase/app";
 import {getFirestore,doc,setDoc,collection,getDocs,query,deleteDoc,updateDoc,deleteField} from "firebase/firestore"
 import {parsing} from './envparser.js'
-
 // TODO: Add SDKs for Firebase products that you want to use
 // https://firebase.google.com/docs/web/setup#available-libraries
-
 let firestoreDB , app ;
-
 // Configuration & Initialize Firebase
 const initializeFirebaseApp = (firebaseConfig) => {
     try {
@@ -21,7 +18,6 @@ const initializeFirebaseApp = (firebaseConfig) => {
 export const configuration = async () =>{
     const keys = await parsing('.env')
     try {
-        console.log(keys)
         const firebaseConfig = {
             apiKey: keys.apiKey,
             authDomain: `${keys.fbName}.firebaseapp.com`,
@@ -35,13 +31,17 @@ export const configuration = async () =>{
         throw error
     }
 }
-
 // Create & Update Document
-export const uploadProcessData = async (dataToUpload={},collectionName="defualt",documentId) => {
+export const uploadProcessData = async (
+        dataToUpload={},
+        collectionName,
+        documentId
+    ) => {
     try {
-        const document = doc(firestoreDB,collectionName,documentId)
+        const id = documentId || doc(collection(firestoreDB, "_"), undefined).id
+        const document = doc(firestoreDB,collectionName,id)
         let dataUploaded = await setDoc(document, dataToUpload)
-    
+        return;
     } catch (error) {
         console.log(error,"firebase-uploadProcessedData")
     }
@@ -49,7 +49,7 @@ export const uploadProcessData = async (dataToUpload={},collectionName="defualt"
 // Get Firebase App
 export const getFirebaseApp = () => app
 // Read the docs of a collection
-export const GetData = async (from,to,collectionName) => {
+export const GetData = async (collectionName) => {
     try {
         const collectionRef = collection(firestoreDB,collectionName)
         const finalData =[]
@@ -57,13 +57,6 @@ export const GetData = async (from,to,collectionName) => {
             collectionRef
         )
         const docSnap = await getDocs(q)
-        if(!from && !to){
-            try {
-                docSnap.slice(from,to)
-            } catch (error) {
-                throw error
-            }
-        }
         docSnap.forEach((doc)=>{
             finalData.push(doc.data())
         })
@@ -87,25 +80,7 @@ export const deleteDocument = async (collectionName, documentId) => {
         console.error(`Error deleting document '${documentId}' from collection '${collectionName}':`, error);
         return false;
     }
-};
-export const deleteFieldFromDocument = async (collectionName, documentId, fieldToDelete) => {
-    try {
-        if (!firestoreDB) {
-            console.error("Firestore DB not initialized. Call initializeFirebaseApp first.");
-            return false;
-        }
-
-        const docRef = doc(firestoreDB, collectionName, documentId);
-        await updateDoc(docRef, {
-            [fieldToDelete]: deleteField() // <-- This is the key for field deletion!
-        });
-        console.log(`Field '${fieldToDelete}' successfully deleted from document '${documentId}' in collection '${collectionName}'.`);
-        return true;
-    } catch (error) {
-        console.error(`Error deleting field '${fieldToDelete}' from document '${documentId}':`, error);
-        return false;
-    }
-};
+}
 export const delField = async (collectionName,documentId,fieldToDelete) =>{
     try {
         if(!firestoreDB){
@@ -113,11 +88,16 @@ export const delField = async (collectionName,documentId,fieldToDelete) =>{
             return
         }
         else{
-            const docRef = doc(firestoreDB,collectionName,documentId)
-            await updateDoc(docRef,{
-                [fieldToDelete]:deleteField()
-            })
-            return "Deleted"
+            try {
+                const docRef = doc(firestoreDB,collectionName,documentId)
+                await updateDoc(docRef,{
+                    [fieldToDelete]:deleteField()
+                })
+                return "Deleted"
+            } catch (error) {
+                console.log("Couldn't remove field:", error)
+                return
+            }
         }
     } catch (error) {
         throw error
