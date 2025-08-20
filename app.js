@@ -1,5 +1,5 @@
 import {initializeApp } from "firebase/app";
-import {getFirestore,doc,setDoc,collection,getDocs,query,deleteDoc} from "firebase/firestore"
+import {getFirestore,doc,setDoc,collection,getDocs,query,deleteDoc,updateDoc,deleteField} from "firebase/firestore"
 import {parsing} from './envparser.js'
 
 // TODO: Add SDKs for Firebase products that you want to use
@@ -88,4 +88,38 @@ export const deleteDocument = async (collectionName, documentId) => {
         return false;
     }
 };
-export const deleteField = async(collectionName)
+export const deleteFieldFromDocument = async (collectionName, documentId, fieldToDelete) => {
+    try {
+        if (!firestoreDB) {
+            console.error("Firestore DB not initialized. Call initializeFirebaseApp first.");
+            return false;
+        }
+
+        const docRef = doc(firestoreDB, collectionName, documentId);
+        await updateDoc(docRef, {
+            [fieldToDelete]: deleteField() // <-- This is the key for field deletion!
+        });
+        console.log(`Field '${fieldToDelete}' successfully deleted from document '${documentId}' in collection '${collectionName}'.`);
+        return true;
+    } catch (error) {
+        console.error(`Error deleting field '${fieldToDelete}' from document '${documentId}':`, error);
+        return false;
+    }
+};
+export const delField = async (collectionName,documentId,fieldToDelete) =>{
+    try {
+        if(!firestoreDB){
+            console.error("FirestoreDB haven't been initialized yet")
+            return
+        }
+        else{
+            const docRef = doc(firestoreDB,collectionName,documentId)
+            await updateDoc(docRef,{
+                [fieldToDelete]:deleteField()
+            })
+            return "Deleted"
+        }
+    } catch (error) {
+        throw error
+    }
+}
