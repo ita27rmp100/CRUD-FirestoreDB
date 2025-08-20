@@ -4,7 +4,6 @@ import { configuration, uploadProcessData,GetData,deleteDocument } from './app.j
 const main = async () => {
     // Step 1: Initialize the Firebase app
     await configuration();
-
     // Step 2: Upload the data to Firestore
     await uploadProcessData();
     // step 3: retrieve

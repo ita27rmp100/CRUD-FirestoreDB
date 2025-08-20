@@ -7,8 +7,7 @@ import {parsing} from './envparser.js'
 
 let firestoreDB , app ;
 
-// Initialize Firebase
-
+// Configuration & Initialize Firebase
 const initializeFirebaseApp = (firebaseConfig) => {
     try {
         app = initializeApp(firebaseConfig);
@@ -19,7 +18,6 @@ const initializeFirebaseApp = (firebaseConfig) => {
         throw error
     };
 }
- 
 export const configuration = async () =>{
     const keys = await parsing('.env')
     try {
@@ -38,44 +36,43 @@ export const configuration = async () =>{
     }
 }
 
-export const uploadProcessData = async () => {
-    const dataToUpload = {
-        name:"Tayeb Abderahim",
-        family:"Ismail",
-        age:19,
-        origin:"Arabe",
-        wilaya:"Blida",
-        country:"Algeria"
-    }
+// Create & Update Document
+export const uploadProcessData = async (dataToUpload={},collectionName="defualt",documentId) => {
     try {
-        const document = doc(firestoreDB,"users","44TLMsCmQcWLlMhqhc9H")
-        let dataUploaded = await setDoc(document,dataToUpload,)
+        const document = doc(firestoreDB,collectionName,documentId)
+        let dataUploaded = await setDoc(document, dataToUpload)
     
     } catch (error) {
         console.log(error,"firebase-uploadProcessedData")
     }
 }
-// get
+// Get Firebase App
 export const getFirebaseApp = () => app
-// read
-export const GetData = async (from,to) => {
+// Read the docs of a collection
+export const GetData = async (from,to,collectionName) => {
     try {
-        const collectionRef = collection(firestoreDB,"users",)
+        const collectionRef = collection(firestoreDB,collectionName)
         const finalData =[]
         const q = query(
             collectionRef
         )
         const docSnap = await getDocs(q)
-
+        if(!from && !to){
+            try {
+                docSnap.slice(from,to)
+            } catch (error) {
+                throw error
+            }
+        }
         docSnap.forEach((doc)=>{
             finalData.push(doc.data())
         })
         return finalData
     } catch (error) {
-        console.log(error,"Firebase-GetData")
+        throw error
     }
 } 
-// delete
+// Delete Doc or Field
 export const deleteDocument = async (collectionName, documentId) => {
     try {
         if (!firestoreDB) {
@@ -91,3 +88,4 @@ export const deleteDocument = async (collectionName, documentId) => {
         return false;
     }
 };
+export const deleteField = async(collectionName)
