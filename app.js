@@ -1,35 +1,48 @@
-import dotenv from "dotenv"
 import {initializeApp } from "firebase/app";
 import {getFirestore,doc,setDoc,collection,getDocs,query,deleteDoc} from "firebase/firestore"
+import {parsing} from './envparser.js'
+
+let keys;
 
 // TODO: Add SDKs for Firebase products that you want to use
 // https://firebase.google.com/docs/web/setup#available-libraries
 
 let firestoreDB , app ;
 
-// Your web app's Firebase configuration
-const firebaseConfig = {
-  apiKey:`${process.env.apiKey}`,
-  authDomain:`${process.env.fbName}.firebaseapp.com`,
-  databaseURL:`https://${process.env.fbURL}.firebaseio.com`,
-  projectId:`${process.env.fbName}`,
-  storageBucket:`${process.env.fbName}.firebasestorage.app`,
-  messagingSenderId:`${process.env.messagingSenderId}`,
-  appId:`${process.env.appId}`
-};
-
 // Initialize Firebase
 
-export const initializeFirebaseApp = () => {
+const initializeFirebaseApp = (firebaseConfig) => {
     try {
-    app = initializeApp(firebaseConfig);
-    firestoreDB = getFirestore( );
-    return app;
+        app = initializeApp(firebaseConfig);
+        firestoreDB = getFirestore(app);
+        return app;
     } catch (error) {
         console.log(error, "firebase-initializeFirebaseApp");
+        throw error
     };
 }
  
+async function configuration(){
+    const keys = await parsing('.env')
+    console.log("Parsed keys :",keys)
+    try {
+        const firebaseConfig = {
+            apiKey:`${keys.apiKey}`,
+            authDomain:`${keys.fbName}.firebaseapp.com`,
+            databaseURL:`https://${keys.fbURL}.firebaseio.com`,
+            projectId:`${keys.fbName}`,
+            storageBucket:`${keys.fbName}.firebasestorage.app`,
+            messagingSenderId:`${keys.messagingSenderId}`,
+            appId:`${keys.appId}`
+        };
+        initializeFirebaseApp(firebaseConfig)
+    } catch (error) {
+        throw error
+    }
+}
+
+configuration()
+
 export const uploadProcessData = async () => {
     const dataToUpload = {
         name:"Tayeb Abderahim",

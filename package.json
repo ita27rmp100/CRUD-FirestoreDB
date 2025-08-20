@@ -1,0 +1,24 @@
+{
+  "name": "crud-firestoredb",
+  "version": "1.0.0",
+  "description": "Sample CRUD repo to handle with FirestoreDB using NodeJS",
+  "main": "app.js",
+  "type": "module",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ita27rmp100/CRUD-FirestoreDB.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/ita27rmp100/CRUD-FirestoreDB/issues"
+  },
+  "homepage": "https://github.com/ita27rmp100/CRUD-FirestoreDB#readme",
+  "dependencies": {
+    "dotenv": "^17.2.1"
+  }
+}
