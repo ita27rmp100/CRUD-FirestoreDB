@@ -2,8 +2,6 @@ import {initializeApp } from "firebase/app";
 import {getFirestore,doc,setDoc,collection,getDocs,query,deleteDoc} from "firebase/firestore"
 import {parsing} from './envparser.js'
 
-let keys;
-
 // TODO: Add SDKs for Firebase products that you want to use
 // https://firebase.google.com/docs/web/setup#available-libraries
 
@@ -22,26 +20,23 @@ const initializeFirebaseApp = (firebaseConfig) => {
     };
 }
  
-async function configuration(){
+export const configuration = async () =>{
     const keys = await parsing('.env')
-    console.log("Parsed keys :",keys)
     try {
+        console.log(keys)
         const firebaseConfig = {
-            apiKey:`${keys.apiKey}`,
-            authDomain:`${keys.fbName}.firebaseapp.com`,
-            databaseURL:`https://${keys.fbURL}.firebaseio.com`,
-            projectId:`${keys.fbName}`,
-            storageBucket:`${keys.fbName}.firebasestorage.app`,
-            messagingSenderId:`${keys.messagingSenderId}`,
-            appId:`${keys.appId}`
+            apiKey: keys.apiKey,
+            authDomain: `${keys.fbName}.firebaseapp.com`,
+            projectId: keys.fbName,
+            storageBucket: `${keys.fbName}.appspot.com`,
+            messagingSenderId: keys.messagingSenderId,
+            appId: keys.appId
         };
         initializeFirebaseApp(firebaseConfig)
     } catch (error) {
         throw error
     }
 }
-
-configuration()
 
 export const uploadProcessData = async () => {
     const dataToUpload = {
@@ -50,6 +45,7 @@ export const uploadProcessData = async () => {
         age:19,
         origin:"Arabe",
         wilaya:"Blida",
+        country:"Algeria"
     }
     try {
         const document = doc(firestoreDB,"users","44TLMsCmQcWLlMhqhc9H")

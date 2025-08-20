@@ -1,9 +1,9 @@
 // testFirestore.js
-import { initializeFirebaseApp, uploadProcessData,GetData,deleteDocument } from './app.js'; // Adjust path if needed
+import { configuration, uploadProcessData,GetData,deleteDocument } from './app.js'; // Adjust path if needed
 
 const main = async () => {
     // Step 1: Initialize the Firebase app
-    initializeFirebaseApp();
+    await configuration();
 
     // Step 2: Upload the data to Firestore
     await uploadProcessData();
